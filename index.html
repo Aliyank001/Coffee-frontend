@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Coffee Café</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>Café Aroma</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#menu" class="nav-link">Menu</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#gallery" class="nav-link">Gallery</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="nav-cta">Order Now</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Freshly Brewed Coffee, Crafted with Passion</h1>
+            <p class="hero-subtitle">Experience the perfect blend of aroma, taste, and comfort</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="orderOnlineBtn">Order Online</button>
+                <button class="btn btn-secondary" id="viewMenuBtn">View Menu</button>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+        </div>
+    </section>
+
+    <!-- About Us Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=800&auto=format&fit=crop" alt="Coffee beans and cup">
+                    <div class="about-badge">Since 2015</div>
+                </div>
+                <div class="about-text">
+                    <span class="section-label">Our Story</span>
+                    <h2 class="section-title">Crafting Perfect Coffee Since Day One</h2>
+                    <p class="about-description">
+                        At Café Aroma, we believe that every cup of coffee tells a story. Our journey began with a simple passion: to source the finest beans from around the world and roast them to perfection.
+                    </p>
+                    <p class="about-description">
+                        We've built a warm, welcoming space where coffee lovers can gather, relax, and savor expertly crafted beverages. From our skilled baristas to our cozy ambiance, every detail is designed to create an unforgettable experience.
+                    </p>
+                    <div class="about-features">
+                        <div class="feature-item">
+                            <div class="feature-icon">☕</div>
+                            <h4>Premium Beans</h4>
+                            <p>Sourced from the best coffee regions</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">👨‍🍳</div>
+                            <h4>Expert Baristas</h4>
+                            <p>Crafted with skill and passion</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">🏠</div>
+                            <h4>Cozy Atmosphere</h4>
+                            <p>Your perfect coffee retreat</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Best Sellers Section -->
+    <section class="best-sellers">
+        <div class="container">
+            <span class="section-label center">Customer Favorites</span>
+            <h2 class="section-title center">Our Signature Collection</h2>
+            <p class="section-subtitle center">Discover our most loved coffee creations</p>
+            
+            <div class="bestsellers-grid">
+                <div class="bestseller-card">
+                    <div class="badge">Best Seller</div>
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?q=80&w=600&auto=format&fit=crop" alt="Caramel Macchiato">
+                    </div>
+                    <div class="card-content">
+                        <h3>Caramel Macchiato</h3>
+                        <p>Rich espresso with steamed milk and caramel drizzle</p>
+                        <div class="card-footer">
+                            <span class="price">$5.99</span>
+                            <button class="add-btn">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bestseller-card">
+                    <div class="badge">Best Seller</div>
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?q=80&w=600&auto=format&fit=crop" alt="Cappuccino">
+                    </div>
+                    <div class="card-content">
+                        <h3>Classic Cappuccino</h3>
+                        <p>Perfect blend of espresso, steamed milk, and foam</p>
+                        <div class="card-footer">
+                            <span class="price">$4.99</span>
+                            <button class="add-btn">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bestseller-card">
+                    <div class="badge">Best Seller</div>
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?q=80&w=600&auto=format&fit=crop" alt="Iced Latte">
+                    </div>
+                    <div class="card-content">
+                        <h3>Vanilla Iced Latte</h3>
+                        <p>Smooth espresso with cold milk and vanilla syrup</p>
+                        <div class="card-footer">
+                            <span class="price">$5.49</span>
+                            <button class="add-btn">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bestseller-card">
+                    <div class="badge">Best Seller</div>
+                    <div class="card-image">
+                        <img src="https://images.unsplash.com/photo-1485808191679-5f86510681a2?q=80&w=600&auto=format&fit=crop" alt="Mocha">
+                    </div>
+                    <div class="card-content">
+                        <h3>Chocolate Mocha</h3>
+                        <p>Espresso, chocolate, and steamed milk perfection</p>
+                        <div class="card-footer">
+                            <span class="price">$5.79</span>
+                            <button class="add-btn">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu" id="menu">
+        <div class="container">
+            <span class="section-label center">Our Menu</span>
+            <h2 class="section-title center">Explore Our Delicious Offerings</h2>
+            
+            <div class="menu-tabs">
+                <button class="tab-btn active" data-category="hot-coffee">Hot Coffee</button>
+                <button class="tab-btn" data-category="cold-coffee">Cold Coffee</button>
+                <button class="tab-btn" data-category="snacks">Snacks & Bakery</button>
+                <button class="tab-btn" data-category="desserts">Desserts</button>
+            </div>
+
+            <!-- Hot Coffee -->
+            <div class="menu-category active" id="hot-coffee">
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Espresso</h3>
+                            <span class="menu-price">$3.49</span>
+                        </div>
+                        <p>Rich and bold, the perfect shot of pure coffee</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Americano</h3>
+                            <span class="menu-price">$3.99</span>
+                        </div>
+                        <p>Espresso with hot water for a smooth finish</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Latte</h3>
+                            <span class="menu-price">$4.99</span>
+                        </div>
+                        <p>Creamy espresso with steamed milk and light foam</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Cappuccino</h3>
+                            <span class="menu-price">$4.99</span>
+                        </div>
+                        <p>Equal parts espresso, steamed milk, and foam</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Flat White</h3>
+                            <span class="menu-price">$5.29</span>
+                        </div>
+                        <p>Velvety microfoam with rich espresso</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Mocha</h3>
+                            <span class="menu-price">$5.79</span>
+                        </div>
+                        <p>Chocolate and espresso blend with steamed milk</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cold Coffee -->
+            <div class="menu-category" id="cold-coffee">
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Iced Americano</h3>
+                            <span class="menu-price">$4.29</span>
+                        </div>
+                        <p>Chilled espresso over ice with cold water</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Iced Latte</h3>
+                            <span class="menu-price">$5.29</span>
+                        </div>
+                        <p>Smooth espresso with cold milk over ice</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Cold Brew</h3>
+                            <span class="menu-price">$4.99</span>
+                        </div>
+                        <p>Slow-steeped for 12 hours, naturally sweet</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Iced Caramel Macchiato</h3>
+                            <span class="menu-price">$5.99</span>
+                        </div>
+                        <p>Vanilla, milk, espresso, and caramel drizzle</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Frappe</h3>
+                            <span class="menu-price">$5.99</span>
+                        </div>
+                        <p>Blended ice coffee with whipped cream</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Affogato</h3>
+                            <span class="menu-price">$6.49</span>
+                        </div>
+                        <p>Vanilla ice cream drowned in hot espresso</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Snacks & Bakery -->
+            <div class="menu-category" id="snacks">
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Croissant</h3>
+                            <span class="menu-price">$3.99</span>
+                        </div>
+                        <p>Buttery, flaky French pastry</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Chocolate Muffin</h3>
+                            <span class="menu-price">$4.29</span>
+                        </div>
+                        <p>Rich chocolate chip muffin, freshly baked</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Bagel with Cream Cheese</h3>
+                            <span class="menu-price">$4.99</span>
+                        </div>
+                        <p>Toasted bagel with smooth cream cheese</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Blueberry Scone</h3>
+                            <span class="menu-price">$3.79</span>
+                        </div>
+                        <p>Traditional scone with fresh blueberries</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Cinnamon Roll</h3>
+                            <span class="menu-price">$4.49</span>
+                        </div>
+                        <p>Soft roll with cinnamon sugar and glaze</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Avocado Toast</h3>
+                            <span class="menu-price">$7.99</span>
+                        </div>
+                        <p>Smashed avocado on artisan sourdough</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desserts -->
+            <div class="menu-category" id="desserts">
+                <div class="menu-grid">
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Tiramisu</h3>
+                            <span class="menu-price">$6.99</span>
+                        </div>
+                        <p>Classic Italian coffee-flavored dessert</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Chocolate Brownie</h3>
+                            <span class="menu-price">$5.49</span>
+                        </div>
+                        <p>Fudgy brownie with chocolate chunks</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Cheesecake</h3>
+                            <span class="menu-price">$6.49</span>
+                        </div>
+                        <p>Creamy New York style cheesecake</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Carrot Cake</h3>
+                            <span class="menu-price">$5.99</span>
+                        </div>
+                        <p>Moist cake with cream cheese frosting</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Cookie Platter</h3>
+                            <span class="menu-price">$7.99</span>
+                        </div>
+                        <p>Assorted fresh-baked cookies (6 pieces)</p>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-item-header">
+                            <h3>Apple Pie Slice</h3>
+                            <span class="menu-price">$5.29</span>
+                        </div>
+                        <p>Warm spiced apple pie with flaky crust</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <span class="section-label center">Gallery</span>
+            <h2 class="section-title center">A Glimpse Into Our World</h2>
+            <p class="section-subtitle center">Experience the ambiance and artistry of Café Aroma</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item tall">
+                    <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=800&auto=format&fit=crop" alt="Coffee shop interior">
+                    <div class="gallery-overlay">
+                        <span>Our Cozy Interior</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=800&auto=format&fit=crop" alt="Latte art">
+                    <div class="gallery-overlay">
+                        <span>Expert Latte Art</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800&auto=format&fit=crop" alt="Coffee beans">
+                    <div class="gallery-overlay">
+                        <span>Premium Beans</span>
+                    </div>
+                </div>
+                <div class="gallery-item wide">
+                    <img src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?q=80&w=800&auto=format&fit=crop" alt="Barista making coffee">
+                    <div class="gallery-overlay">
+                        <span>Crafted with Care</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800&auto=format&fit=crop" alt="Coffee and pastries">
+                    <div class="gallery-overlay">
+                        <span>Fresh Pastries</span>
+                    </div>
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=800&auto=format&fit=crop" alt="Espresso cup">
+                    <div class="gallery-overlay">
+                        <span>Perfect Espresso</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reservation Section -->
+    <section class="reservation">
+        <div class="container">
+            <div class="reservation-content">
+                <div class="reservation-info">
+                    <span class="section-label">Reserve Your Spot</span>
+                    <h2 class="section-title">Book a Table or Order Online</h2>
+                    <p class="reservation-text">
+                        Whether you want to enjoy our cozy ambiance or grab your favorite coffee to go, we're here for you. Reserve a table for your visit or order online for quick pickup.
+                    </p>
+                    <div class="quick-contact">
+                        <a href="tel:+1234567890" class="contact-btn">
+                            <span class="icon">📞</span>
+                            <div>
+                                <span class="label">Call Us</span>
+                                <span class="value">+1 (234) 567-8900</span>
+                            </div>
+                        </a>
+                        <a href="https://wa.me/1234567890" class="contact-btn whatsapp">
+                            <span class="icon">💬</span>
+                            <div>
+                                <span class="label">WhatsApp</span>
+                                <span class="value">Chat with us</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="reservation-form">
+                    <form id="reservationForm">
+                        <div class="form-group">
+                            <label for="name">Full Name</label>
+                            <input type="text" id="name" name="name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+1 (234) 567-8900" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="date">Date</label>
+                                <input type="date" id="date" name="date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="time">Time</label>
+                                <input type="time" id="time" name="time" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="guests">Number of Guests</label>
+                            <select id="guests" name="guests" required>
+                                <option value="">Select guests</option>
+                                <option value="1">1 Guest</option>
+                                <option value="2">2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="5+">5+ Guests</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary full-width">Reserve Table</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hours & Location Section -->
+    <section class="hours-location">
+        <div class="container">
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🕒</div>
+                    <h3>Opening Hours</h3>
+                    <div class="hours-list">
+                        <div class="hours-item">
+                            <span>Monday - Friday</span>
+                            <span>7:00 AM - 9:00 PM</span>
+                        </div>
+                        <div class="hours-item">
+                            <span>Saturday</span>
+                            <span>8:00 AM - 10:00 PM</span>
+                        </div>
+                        <div class="hours-item">
+                            <span>Sunday</span>
+                            <span>8:00 AM - 8:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">📍</div>
+                    <h3>Our Location</h3>
+                    <p class="location-address">
+                        123 Coffee Street<br>
+                        Downtown District<br>
+                        New York, NY 10001<br>
+                        United States
+                    </p>
+                    <a href="#" class="directions-btn">Get Directions →</a>
+                </div>
+                <div class="info-card map-card">
+                    <div class="map-placeholder">
+                        <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop" alt="Café location map">
+                        <div class="map-overlay">
+                            <span>📍 View on Map</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <span class="section-label center">Testimonials</span>
+            <h2 class="section-title center">What Our Customers Say</h2>
+            <p class="section-subtitle center">Real experiences from coffee lovers like you</p>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "The best coffee in town! The atmosphere is cozy and perfect for working or catching up with friends. Their caramel macchiato is absolutely divine."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SM</div>
+                        <div class="author-info">
+                            <h4>Sarah Mitchell</h4>
+                            <span>Regular Customer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "I come here every morning before work. The baristas know my order by heart and always greet me with a smile. The quality is consistently excellent!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div class="author-info">
+                            <h4>James Davis</h4>
+                            <span>Coffee Enthusiast</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Café Aroma has become my second home. The pastries are fresh, the coffee is perfection, and the staff makes you feel like family. Highly recommend!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">ER</div>
+                        <div class="author-info">
+                            <h4>Emily Rodriguez</h4>
+                            <span>Local Resident</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "As a coffee connoisseur, I'm impressed by their bean selection and brewing techniques. Every cup is crafted with precision and care. A true gem!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MK</div>
+                        <div class="author-info">
+                            <h4>Michael Kim</h4>
+                            <span>Coffee Expert</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Love the vibe here! It's the perfect spot for remote work with great WiFi and even better coffee. The cold brew is my absolute favorite."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">LP</div>
+                        <div class="author-info">
+                            <h4>Lisa Parker</h4>
+                            <span>Freelancer</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "From the moment you walk in, you're greeted with the amazing aroma of fresh coffee. The attention to detail in every drink is remarkable. 10/10!"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">DW</div>
+                        <div class="author-info">
+                            <h4>David Wilson</h4>
+                            <span>Happy Customer</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <span class="section-label">Get In Touch</span>
+                    <h2 class="section-title">We'd Love to Hear From You</h2>
+                    <p class="contact-description">
+                        Have questions, feedback, or special requests? Drop us a message and we'll get back to you as soon as possible.
+                    </p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">📧</div>
+                            <div>
+                                <h4>Email</h4>
+                                <a href="mailto:hello@cafearoma.com">hello@cafearoma.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📞</div>
+                            <div>
+                                <h4>Phone</h4>
+                                <a href="tel:+1234567890">+1 (234) 567-8900</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">📍</div>
+                            <div>
+                                <h4>Address</h4>
+                                <p>123 Coffee Street, Downtown<br>New York, NY 10001</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="social-links">
+                        <h4>Follow Us</h4>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon" aria-label="Instagram">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-icon" aria-label="Facebook">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-icon" aria-label="Twitter">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="contact-name">Your Name</label>
+                            <input type="text" id="contact-name" name="name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="john@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="How can we help?" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Tell us more..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary full-width">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <h3>Café Aroma</h3>
+                        <p class="footer-tagline">Brewing Excellence Since 2015</p>
+                    </div>
+                    <p class="footer-description">
+                        Experience the perfect blend of premium coffee, cozy ambiance, and exceptional service. Every cup tells a story.
+                    </p>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#menu">Menu</a></li>
+                        <li><a href="#about">About Us</a></li>
+                        <li><a href="#gallery">Gallery</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Our Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Dine In</a></li>
+                        <li><a href="#">Takeaway</a></li>
+                        <li><a href="#">Online Order</a></li>
+                        <li><a href="#">Catering</a></li>
+                        <li><a href="#">Private Events</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Connect With Us</h4>
+                    <div class="footer-social">
+                        <a href="#" aria-label="Instagram">Instagram</a>
+                        <a href="#" aria-label="Facebook">Facebook</a>
+                        <a href="#" aria-label="Twitter">Twitter</a>
+                    </div>
+                    <div class="footer-contact">
+                        <p>📧 hello@cafearoma.com</p>
+                        <p>📞 +1 (234) 567-8900</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2026 Café Aroma. All rights reserved. | Designed with ☕ & ❤️</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
