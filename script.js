@@ -1,6 +1,9 @@
 // ===== NAVBAR SCROLL EFFECT =====
 const navbar = document.getElementById('navbar');
 const navLinks = document.querySelectorAll('.nav-link');
+const hamburger = document.getElementById('hamburger');
+const mobileNav = document.getElementById('mobileNav');
+const mobileClose = document.getElementById('mobileClose');
 
 window.addEventListener('scroll', () => {
     if (window.scrollY > 100) {
@@ -8,6 +11,55 @@ window.addEventListener('scroll', () => {
     } else {
         navbar.classList.remove('scrolled');
     }
+});
+
+// ===== MOBILE NAV TOGGLE =====
+function openMobileNav() {
+    if (mobileNav) {
+        mobileNav.classList.add('open');
+        hamburger.classList.add('open');
+        hamburger.setAttribute('aria-expanded', 'true');
+        mobileNav.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeMobileNav() {
+    if (mobileNav) {
+        mobileNav.classList.remove('open');
+        hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        mobileNav.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+}
+
+if (hamburger) {
+    hamburger.addEventListener('click', () => {
+        if (mobileNav && mobileNav.classList.contains('open')) {
+            closeMobileNav();
+        } else {
+            openMobileNav();
+        }
+    });
+}
+
+if (mobileClose) {
+    mobileClose.addEventListener('click', () => {
+        closeMobileNav();
+    });
+}
+
+// Close mobile nav when clicking a mobile link
+document.addEventListener('click', (e) => {
+    if (!e.target.closest) return;
+    const link = e.target.closest('.mobile-menu a');
+    if (link) closeMobileNav();
+});
+
+// Close on ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileNav();
 });
 
 // ===== SMOOTH SCROLLING FOR NAV LINKS =====
