@@ -20,11 +20,11 @@ test('menu URL preserves subdirectory, removes old queries and carries table',()
  assert.throws(()=>A.menuUrl('https://user:pass@example.com'));
  for(const value of [0,100,1.5,'abc'])assert.throws(()=>A.menuUrl('https://example.com',value));
 });
-test('reservations reject past times, closed hours, off-slot times and impossible dates',()=>{
+test('reservation preferences reject past times, off-slot times and impossible dates',()=>{
  const now=new Date(2026,10,11,12,0);
  assert.match(A.reservationError('2026-11-11','11:00',now),/future/);
- assert.match(A.reservationError('2026-11-12','07:30',now),/between/);
- assert.match(A.reservationError('2026-11-12','21:30',now),/between/);
+ assert.equal(A.reservationError('2026-11-12','07:30',now),'');
+ assert.equal(A.reservationError('2026-11-12','21:30',now),'');
  assert.match(A.reservationError('2026-11-12','13:15',now),/half-hour/);
  assert.match(A.reservationError('2027-02-30','13:00',now),/valid/);
  assert.match(A.reservationError('2027-06-10','13:00',now),/90 days/);

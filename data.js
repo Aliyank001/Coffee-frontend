@@ -35,9 +35,6 @@
     if(Number.isNaN(day.getTime())||localDate(day)!==date) return 'Choose a valid date.';
     if(day<=now) return 'Choose a time in the future.';
     if((day-now)>90*86400000) return 'Please choose a date within the next 90 days.';
-    const weekend=[0,6].includes(day.getDay()),open=weekend?9:8,close=weekend?23:22;
-    const minutes=day.getHours()*60+day.getMinutes();
-    if(minutes<open*60||minutes>close*60-60) return `Choose a time between ${open}:00 and ${close-1}:00. Last seating is one hour before closing.`;
     if(day.getMinutes()%30) return 'Please choose a half-hour time slot.';
     return '';
   }
