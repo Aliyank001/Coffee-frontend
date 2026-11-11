@@ -24,3 +24,7 @@ Create a production-ready transparent PNG product sprite sheet for a premium int
 ## Verification limits
 
 DOM interaction tests cover the flavour selector, keyboard switching, pause state and selected-drink-to-cart integration, alongside the existing checkout/QR/receipt tests. Final browser visual review and phone scan testing remain necessary because the authoring environment did not expose a usable browser automation surface.
+
+## Story photograph update
+
+Asset: `assets/cafe-interior.png`, generated with the built-in image generation tool (opaque background). Brief: photorealistic editorial café interior in landscape 4:3; walnut cabinetry, brown leather seating, stone espresso counter, brushed brass pendants, soft window daylight, subtle plants and warm amber light. Eye-level composition showing the counter and seating, no people, logos, signs, text or blank borders. The values strip beneath the hero was removed at the user’s request. The photo fills its frame with explicit inset positioning.
