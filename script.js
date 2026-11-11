@@ -1,414 +1,82 @@
-// ===== NAVBAR SCROLL EFFECT =====
-const navbar = document.getElementById('navbar');
-const navLinks = document.querySelectorAll('.nav-link');
-const hamburger = document.getElementById('hamburger');
-const mobileNav = document.getElementById('mobileNav');
-const mobileClose = document.getElementById('mobileClose');
+'use strict';
+(() => {
+  const A=window.Aroma, $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], e=A.escape;
+  const PREFIX='aroma.v2.', memory=new Map();
+  let storageOK=true;
+  const read=(key,fallback)=>{try {const raw=localStorage.getItem(PREFIX+key);return raw?JSON.parse(raw):fallback;}catch{storageOK=false;return memory.has(key)?memory.get(key):fallback;}};
+  const save=(key,value)=>{memory.set(key,value);try{localStorage.setItem(PREFIX+key,JSON.stringify(value));return true;}catch{storageOK=false;return false;}};
+  const remove=key=>{memory.delete(key);try{localStorage.removeItem(PREFIX+key);}catch{storageOK=false;}};
+  let toastTimer;
+  function toast(message){const el=$('#toast');if(!el)return;el.textContent=message;el.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('visible'),3500);}
+  const publicFallback='https://cafe-aroma-aliyans-studio.earthycherry1.chatgpt.site/';
+  function defaultBase(){if(!['http:','https:'].includes(location.protocol))return publicFallback;return new URL('./index.html',location.href).href;}
+  function baseUrl(){const stored=read('site-url',null);try{return A.menuUrl(typeof stored==='string'?stored:defaultBase()).split('#')[0];}catch{return defaultBase();}}
+  function qrSvg(value){if(typeof qrcode!=='function')throw new Error('QR library could not load. Refresh the page.');const qr=qrcode(0,'M');qr.addData(value,'Byte');qr.make();return qr.createSvgTag({cellSize:5,margin:20,scalable:true}).replace('<svg ','<svg role="img" aria-label="QR code linking to the café menu" ');}
+  function renderQR(selector,value){const el=$(selector);if(!el)return;try{el.innerHTML=qrSvg(value);}catch(err){el.textContent=err.message;}}
+  function download(name,content,type){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+  function totalsHTML(t){return `<div class="total-line"><span>Subtotal</span><span>${A.money(t.subtotal)}</span></div><div class="total-line"><span>Demo tax (5%)</span><span>${A.money(t.tax)}</span></div><div class="total-line grand"><strong>Total</strong><strong>${A.money(t.total)}</strong></div>`;}
+  function orders(){const value=read('orders',[]);return Array.isArray(value)?value.filter(A.validOrder).slice(0,20):[];}
+  $$('[data-year]').forEach(el=>el.textContent=new Date().getFullYear());
+  const menuToggle=$('.menu-toggle'),mobile=$('#mobile-menu');
+  function closeNav(focus=false){if(!mobile)return;mobile.hidden=true;menuToggle.setAttribute('aria-expanded','false');menuToggle.setAttribute('aria-label','Open navigation');if(focus)menuToggle.focus();}
+  menuToggle?.addEventListener('click',()=>{const open=mobile.hidden;mobile.hidden=!open;menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close navigation':'Open navigation');if(open)mobile.querySelector('a').focus();});
+  mobile?.addEventListener('click',event=>{if(event.target.closest('a'))closeNav();});
+  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&mobile&&!mobile.hidden)closeNav(true);});
+  document.addEventListener('click',event=>{if(mobile&&!mobile.hidden&&!mobile.contains(event.target)&&!menuToggle.contains(event.target))closeNav();});
+  window.matchMedia('(min-width:801px)').addEventListener('change',event=>{if(event.matches)closeNav();});
+  if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');io.unobserve(entry.target);}}),{threshold:.08});$$('.reveal').forEach(el=>io.observe(el));document.documentElement.classList.add('js-motion');const sections=$$('section[id]');const navIO=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){$$('.site-header nav a[href^="#"]').forEach(a=>{if(a.hash==='#'+entry.target.id)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}},{rootMargin:'-15% 0px -60% 0px'});sections.forEach(s=>navIO.observe(s));}
 
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
+  if($('#product-grid')) {
+    let cart=A.cleanCart(read('cart',[])),filter='all';
+    const dialog=$('#cart-dialog');let cartOpener;
+    const preferences=read('preferences',{});
+    if(preferences&&typeof preferences==='object'){
+      if(['dine-in','takeaway'].includes(preferences.service))$('#service').value=preferences.service;
+      if(Number.isInteger(Number(preferences.table))&&Number(preferences.table)>=1&&Number(preferences.table)<=99)$('#table').value=preferences.table;
+      if(typeof preferences.notes==='string')$('#order-notes').value=preferences.notes.slice(0,300);
+      if(['counter','cash'].includes(preferences.payment))$('#payment').value=preferences.payment;
     }
-});
+    const tableParam=new URLSearchParams(location.search).get('table');
+    if(tableParam&&/^\d+$/.test(tableParam)&&+tableParam>=1&&+tableParam<=99){$('#table').value=+tableParam;$('#service').value='dine-in';toast(`Welcome to table ${+tableParam}. Your table is ready in the bag.`);}
+    function persistPreferences(){save('preferences',{service:$('#service').value,table:Number($('#table').value),notes:$('#order-notes').value,payment:$('#payment').value});}
+    function serviceUI(){const dine=$('#service').value==='dine-in';$('#table-label').hidden=!dine;$('#table').required=dine;persistPreferences();}
+    serviceUI();$('#service').addEventListener('change',serviceUI);
+    ['#table','#order-notes','#payment'].forEach(s=>$(s).addEventListener('input',persistPreferences));
+    function renderProducts(){const query=$('#menu-search').value.trim().toLowerCase();const products=A.products.filter(p=>(filter==='all'||p.category===filter)&&`${p.name} ${p.description} ${A.labels[p.category]}`.toLowerCase().includes(query));$('#product-grid').innerHTML=products.map((p,index)=>`<article class="product-card" style="animation-delay:${Math.min(index,5)*45}ms"><div class="product-image"><img src="assets/${p.image}.jpg" alt="${e(p.name)}" loading="lazy" decoding="async" width="600" height="640"><span class="product-tag">${e(p.tag)}</span></div><p class="product-category">${A.labels[p.category]}</p><h3>${e(p.name)}</h3><p>${e(p.description)}</p><div class="product-bottom"><strong>${A.money(p.price)}</strong><button class="add-button" data-add="${p.id}" aria-label="Add ${e(p.name)} to bag">+</button></div></article>`).join('');$('#menu-empty').hidden=products.length>0;$('#menu-results').textContent=`${products.length} ${products.length===1?'favourite':'favourites'} to make your day`;}
+    function renderCart(){const count=cart.reduce((n,i)=>n+i.qty,0);$$('[data-count]').forEach(el=>el.textContent=count);$('#cart-options').hidden=!count;$('#checkout').disabled=!count;$('#cart-items').innerHTML=count?cart.map(item=>{const p=A.products.find(p=>p.id===item.id);return `<article class="cart-line"><img src="assets/${p.image}.jpg" alt="" width="64" height="72"><div><h3>${e(p.name)}</h3><p>${A.money(p.price)} each</p><div class="quantity"><button data-qty="${p.id}" data-delta="-1" aria-label="Decrease ${e(p.name)} quantity">−</button><span aria-label="Quantity">${item.qty}</span><button data-qty="${p.id}" data-delta="1" aria-label="Increase ${e(p.name)} quantity" ${item.qty>=20?'disabled':''}>+</button></div></div><div><strong>${A.money(p.price*item.qty)}</strong><button class="remove-item" data-remove="${p.id}" aria-label="Remove ${e(p.name)}">Remove</button></div></article>`;}).join(''):'<div class="empty-state"><h3>A little empty.<br>A lot of possibility.</h3><p class="muted small">Your next favourite is waiting on the menu.</p></div>';$('#cart-totals').innerHTML=totalsHTML(A.totals(cart));}
+    function persistCart(){save('cart',cart);renderCart();}
+    $('#product-grid').addEventListener('click',event=>{const button=event.target.closest('[data-add]');if(!button)return;const p=A.products.find(p=>p.id===button.dataset.add),item=cart.find(i=>i.id===p.id);if(item?.qty>=20){toast('Maximum 20 of each item per order.');return;}if(item)item.qty++;else cart.push({id:p.id,qty:1});persistCart();toast(`${p.name} added to your bag${storageOK?'':'. Storage unavailable; keep this page open.'}`);});
+    $('#cart-items').addEventListener('click',event=>{const button=event.target.closest('[data-qty],[data-remove]');if(!button)return;const id=button.dataset.qty||button.dataset.remove;const item=cart.find(i=>i.id===id);if(!item)return;if(button.dataset.remove)cart=cart.filter(i=>i.id!==id);else{item.qty=Math.max(0,Math.min(20,item.qty+Number(button.dataset.delta)));cart=cart.filter(i=>i.qty>0);}persistCart();const next=$(`[data-qty="${id}"][data-delta="${button.dataset.delta}"]`);(next||$('#checkout')).focus();});
+    $$('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;$$('[data-filter]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});renderProducts();}));
+    $('#menu-search').addEventListener('input',renderProducts);$('#reset-search').addEventListener('click',()=>{$('#menu-search').value='';$('[data-filter="all"]').click();$('#menu-search').focus();});
+    function closeCart(){dialog.close();}
+    $$('[data-cart]').forEach(button=>button.addEventListener('click',()=>{closeNav();cartOpener=button;renderCart();dialog.showModal();document.body.style.overflow='hidden';}));
+    $$('[data-close-cart]').forEach(button=>button.addEventListener('click',closeCart));dialog.addEventListener('close',()=>{document.body.style.overflow='';cartOpener?.focus();});dialog.addEventListener('click',event=>{if(event.target===dialog&&event.clientX<dialog.getBoundingClientRect().left)closeCart();});
+    let checkoutBusy=false;
+    $('#checkout').addEventListener('click',()=>{if(checkoutBusy||!cart.length)return;if($('#service').value==='dine-in'&&!$('#table').reportValidity())return;checkoutBusy=true;const t=A.totals(cart);const order={id:'AR-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase(),createdAt:new Date().toISOString(),items:cart.map(i=>{const p=A.products.find(p=>p.id===i.id);return {id:p.id,name:p.name,price:p.price,qty:i.qty};}),...t,service:$('#service').value,table:$('#service').value==='dine-in'?Number($('#table').value):null,notes:$('#order-notes').value.trim(),payment:$('#payment').value,status:'Payment due',menuBase:baseUrl()};const saved=save('orders',[order,...orders()].slice(0,20));if(!saved){toast('Device storage is unavailable. Enable browser storage to create a receipt. Your bag is still here.');checkoutBusy=false;return;}save('latest-order',order.id);cart=[];persistCart();location.href='billing.html?order='+encodeURIComponent(order.id);});
+    renderProducts();renderCart();renderQR('#home-qr',A.menuUrl(baseUrl()));
+    const gallery=$('#gallery-dialog');$('#view-space').addEventListener('click',()=>{gallery.showModal();document.body.style.overflow='hidden';});$('#close-gallery').addEventListener('click',()=>gallery.close());gallery.addEventListener('close',()=>{document.body.style.overflow='';$('#view-space').focus();});gallery.addEventListener('click',event=>{if(event.target===gallery)gallery.close();});
+    const dateInput=$('#reservation-date'),maxDate=new Date();maxDate.setDate(maxDate.getDate()+90);dateInput.min=A.localDate();dateInput.max=A.localDate(maxDate);
+    $('#reservation-form').addEventListener('submit',event=>{event.preventDefault();const form=event.currentTarget,data=Object.fromEntries(new FormData(form)),status=$('#reservation-status');const error=A.reservationError(data.date,data.time);if(error){status.textContent=error;return;}if(data.name.trim().length<2){status.textContent='Please enter your name.';return;}const existing=read('reservations',[]),list=Array.isArray(existing)?existing:[];const saved=save('reservations',[{...data,createdAt:new Date().toISOString()},...list].slice(0,20));status.textContent=saved?`Thanks, ${data.name.trim()}. Demo reservation saved for ${data.guests} on ${data.date} at ${data.time}. No real table has been booked.`:'Storage is unavailable. Your reservation was not saved. Please enable browser storage.';if(saved)form.reset();});
+    $('#contact-form').addEventListener('submit',event=>{event.preventDefault();const form=event.currentTarget,data=Object.fromEntries(new FormData(form)),status=$('#contact-status');if(data.name.trim().length<2||data.message.trim().length<10){status.textContent='Please add your name and a message of at least 10 characters.';return;}const existing=read('messages',[]),list=Array.isArray(existing)?existing:[];const saved=save('messages',[{...data,createdAt:new Date().toISOString()},...list].slice(0,20));status.textContent=saved?'Your demo message is saved on this device. It has not been emailed or sent to a café.':'Storage is unavailable. Your message was not saved.';if(saved)form.reset();});
+    let clearArmed=false;$('#clear-demo').addEventListener('click',()=>{if(!clearArmed){clearArmed=true;$('#clear-demo').textContent='Confirm: delete my demo data';setTimeout(()=>{clearArmed=false;$('#clear-demo').textContent='Clear my demo data';},6000);return;}['cart','preferences','orders','latest-order','reservations','messages','site-url'].forEach(remove);cart=[];persistCart();$('#reservation-form').reset();$('#contact-form').reset();$('#reservation-status').textContent='';$('#contact-status').textContent='';$('#service').value='dine-in';$('#table').value=1;$('#payment').value='counter';$('#order-notes').value='';serviceUI();renderQR('#home-qr',A.menuUrl(baseUrl()));toast('Your demo data has been cleared.');$('#clear-demo').textContent='Clear my demo data';clearArmed=false;});
+    window.addEventListener('storage',event=>{if(event.key===PREFIX+'cart'){cart=A.cleanCart(read('cart',[]));renderCart();}});
+  }
 
-// ===== MOBILE NAV TOGGLE =====
-function openMobileNav() {
-    if (mobileNav) {
-        mobileNav.classList.add('open');
-        hamburger.classList.add('open');
-        hamburger.setAttribute('aria-expanded', 'true');
-        mobileNav.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-    }
-}
+  if(document.body.dataset.page==='qr') {
+    const urlInput=$('#site-url');urlInput.value=baseUrl();let currentUrl='',currentSvg='',ready=false;
+    function dirty(){ready=false;['#download-qr','#print-qr','#copy-qr'].forEach(s=>$(s).disabled=true);$('#qr-status').textContent='Update the preview to apply your changes.';}
+    function update(){try{const table=$('#qr-type').value==='table'?$('#qr-table').value:'';const url=A.menuUrl(urlInput.value,table);if(url.length>700)throw new Error('Please use a shorter website URL.');currentSvg=qrSvg(url);currentUrl=url;$('#studio-qr').innerHTML=currentSvg;$('#qr-caption').textContent=table?`TABLE ${Number(table)} · SCAN TO ORDER`:'SCAN TO EXPLORE OUR MENU';$('#qr-destination').textContent=url;$('#test-qr').href=url;const u=new URL(url),local=['localhost','127.0.0.1','[::1]'].includes(u.hostname);$('#qr-notice').textContent=local?'Local preview address: phones cannot open localhost on your computer. Enter your public deployed URL before printing.':'Use a publicly accessible website for customer scans. A private preview may require sign-in. Test the link on a phone before printing.';save('site-url',A.menuUrl(urlInput.value).split('#')[0]);$('#qr-status').textContent='Your QR is ready. It opens the menu'+(table?` with table ${Number(table)} selected.`:'.');ready=true;['#download-qr','#print-qr','#copy-qr'].forEach(s=>$(s).disabled=false);}catch(err){ready=false;$('#qr-status').textContent=err.message;['#download-qr','#print-qr','#copy-qr'].forEach(s=>$(s).disabled=true);}}
+    $('#qr-type').addEventListener('change',()=>{$('#qr-table-label').hidden=$('#qr-type').value!=='table';dirty();});urlInput.addEventListener('input',dirty);$('#qr-table').addEventListener('input',dirty);$('#qr-form').addEventListener('submit',event=>{event.preventDefault();update();});$('#download-qr').addEventListener('click',()=>{if(ready)download('cafe-aroma-'+($('#qr-type').value==='table'?'table-'+$('#qr-table').value:'menu')+'.svg',currentSvg,'image/svg+xml');});$('#print-qr').addEventListener('click',()=>{if(ready)window.print();});$('#copy-qr').addEventListener('click',async()=>{if(!ready)return;try{await navigator.clipboard.writeText(currentUrl);toast('Menu link copied.');}catch{$('#qr-status').textContent='Select and copy the menu link shown below the QR.';}});update();
+  }
 
-function closeMobileNav() {
-    if (mobileNav) {
-        mobileNav.classList.remove('open');
-        hamburger.classList.remove('open');
-        hamburger.setAttribute('aria-expanded', 'false');
-        mobileNav.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-    }
-}
-
-if (hamburger) {
-    hamburger.addEventListener('click', () => {
-        if (mobileNav && mobileNav.classList.contains('open')) {
-            closeMobileNav();
-        } else {
-            openMobileNav();
-        }
-    });
-}
-
-if (mobileClose) {
-    mobileClose.addEventListener('click', () => {
-        closeMobileNav();
-    });
-}
-
-// Close mobile nav when clicking a mobile link
-document.addEventListener('click', (e) => {
-    if (!e.target.closest) return;
-    const link = e.target.closest('.mobile-menu a');
-    if (link) closeMobileNav();
-});
-
-// Close on ESC
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMobileNav();
-});
-
-// ===== SMOOTH SCROLLING FOR NAV LINKS =====
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Remove active class from all links
-        navLinks.forEach(l => l.classList.remove('active'));
-        
-        // Add active class to clicked link
-        link.classList.add('active');
-        
-        // Get target section
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        
-        if (targetSection) {
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
-    });
-});
-
-// ===== NAV CTA BUTTON (ORDER NOW) =====
-const navCtaBtn = document.querySelector('.nav-cta');
-if (navCtaBtn) {
-    navCtaBtn.addEventListener('click', () => {
-        const reservationSection = document.querySelector('.reservation');
-        if (reservationSection) {
-            reservationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-}
-
-// ===== HERO BUTTONS FUNCTIONALITY =====
-const orderOnlineBtn = document.getElementById('orderOnlineBtn');
-const viewMenuBtn = document.getElementById('viewMenuBtn');
-
-if (orderOnlineBtn) {
-    orderOnlineBtn.addEventListener('click', () => {
-        const reservationSection = document.querySelector('.reservation');
-        if (reservationSection) {
-            reservationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-}
-
-if (viewMenuBtn) {
-    viewMenuBtn.addEventListener('click', () => {
-        const menuSection = document.getElementById('menu');
-        if (menuSection) {
-            menuSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
-}
-
-// ===== BUTTON CLICK EFFECTS =====
-const allButtons = document.querySelectorAll('.btn, .nav-cta');
-
-allButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
-        // Create ripple effect
-        const ripple = document.createElement('span');
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
-        
-        ripple.style.width = ripple.style.height = size + 'px';
-        ripple.style.left = x + 'px';
-        ripple.style.top = y + 'px';
-        ripple.classList.add('ripple');
-        
-        this.appendChild(ripple);
-        
-        setTimeout(() => {
-            ripple.remove();
-        }, 600);
-    });
-});
-
-// ===== HERO CONTENT FADE IN ON LOAD =====
-window.addEventListener('load', () => {
-    const heroContent = document.querySelector('.hero-content');
-    heroContent.style.opacity = '0';
-    
-    setTimeout(() => {
-        heroContent.style.transition = 'opacity 1s ease-out';
-        heroContent.style.opacity = '1';
-    }, 100);
-});
-
-// ===== PARALLAX EFFECT FOR HERO BACKGROUND =====
-let ticking = false;
-
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(() => {
-            const scrolled = window.pageYOffset;
-            const hero = document.querySelector('.hero');
-            
-            if (hero && scrolled < hero.offsetHeight) {
-                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-            } else if (hero) {
-                hero.style.transform = 'translateY(0)';
-            }
-            
-            ticking = false;
-        });
-        
-        ticking = true;
-    }
-});
-
-// ===== ACTIVE LINK ON SCROLL =====
-const sections = document.querySelectorAll('section');
-
-window.addEventListener('scroll', () => {
-    let current = '';
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        
-        if (pageYOffset >= sectionTop - 200) {
-            current = section.getAttribute('id');
-        }
-    });
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${current}`) {
-            link.classList.add('active');
-        }
-    });
-});
-
-// ===== MENU TABS FUNCTIONALITY =====
-const tabButtons = document.querySelectorAll('.tab-btn');
-const menuCategories = document.querySelectorAll('.menu-category');
-
-tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-        // Remove active class from all tabs and categories
-        tabButtons.forEach(btn => btn.classList.remove('active'));
-        menuCategories.forEach(cat => cat.classList.remove('active'));
-        
-        // Add active class to clicked tab
-        button.classList.add('active');
-        
-        // Show corresponding category
-        const category = button.getAttribute('data-category');
-        const targetCategory = document.getElementById(category);
-        if (targetCategory) {
-            targetCategory.classList.add('active');
-        }
-    });
-});
-
-// ===== SCROLL ANIMATIONS (INTERSECTION OBSERVER) =====
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for animation
-const animatedElements = document.querySelectorAll('.about-content, .bestseller-card, .menu-item, .gallery-item, .testimonial-card, .info-card');
-animatedElements.forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
-    observer.observe(el);
-});
-
-// ===== RESERVATION FORM HANDLING =====
-const reservationForm = document.getElementById('reservationForm');
-if (reservationForm) {
-    reservationForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData(reservationForm);
-        const name = formData.get('name');
-        const phone = formData.get('phone');
-        const date = formData.get('date');
-        const time = formData.get('time');
-        const guests = formData.get('guests');
-        
-        // Show success message
-        alert(`Thank you, ${name}! Your table for ${guests} guest(s) has been reserved for ${date} at ${time}. We'll contact you at ${phone} to confirm.`);
-        
-        // Reset form
-        reservationForm.reset();
-    });
-}
-
-// ===== CONTACT FORM HANDLING =====
-const contactForm = document.getElementById('contactForm');
-if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        const formData = new FormData(contactForm);
-        const name = formData.get('name');
-        
-        // Show success message
-        alert(`Thank you for reaching out, ${name}! We've received your message and will get back to you soon.`);
-        
-        // Reset form
-        contactForm.reset();
-    });
-}
-
-// ===== ADD TO CART FUNCTIONALITY =====
-const addToCartButtons = document.querySelectorAll('.add-btn');
-let cart = [];
-
-addToCartButtons.forEach(button => {
-    button.addEventListener('click', function(e) {
-        e.stopPropagation();
-        
-        const card = this.closest('.bestseller-card');
-        const itemName = card.querySelector('h3').textContent;
-        const itemPrice = card.querySelector('.price').textContent;
-        
-        // Add to cart array
-        cart.push({ name: itemName, price: itemPrice });
-        
-        // Visual feedback
-        this.textContent = 'Added ✓';
-        this.style.background = '#4CAF50';
-        this.style.color = 'white';
-        
-        setTimeout(() => {
-            this.textContent = 'Add to Cart';
-            this.style.background = '';
-            this.style.color = '';
-        }, 1500);
-        
-        // Log cart (in real app, this would update cart UI)
-        console.log('Cart:', cart);
-    });
-});
-
-// ===== GALLERY LIGHTBOX EFFECT =====
-const galleryItems = document.querySelectorAll('.gallery-item');
-
-galleryItems.forEach(item => {
-    item.addEventListener('click', () => {
-        const img = item.querySelector('img');
-        const imgSrc = img.getAttribute('src');
-        
-        // Create lightbox (simple version)
-        const lightbox = document.createElement('div');
-        lightbox.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            cursor: pointer;
-        `;
-        
-        const lightboxImg = document.createElement('img');
-        lightboxImg.src = imgSrc;
-        lightboxImg.style.cssText = `
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-            box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
-        `;
-        
-        lightbox.appendChild(lightboxImg);
-        document.body.appendChild(lightbox);
-        
-        // Close on click
-        lightbox.addEventListener('click', () => {
-            lightbox.remove();
-        });
-    });
-});
-
-// ===== SET MINIMUM DATE FOR RESERVATION =====
-const dateInput = document.getElementById('date');
-if (dateInput) {
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('min', today);
-}
-
-// ===== SMOOTH REVEAL ON SCROLL =====
-function revealOnScroll() {
-    const reveals = document.querySelectorAll('.section-title, .section-subtitle, .section-label');
-    
-    reveals.forEach(element => {
-        const elementTop = element.getBoundingClientRect().top;
-        const elementVisible = 150;
-        
-        if (elementTop < window.innerHeight - elementVisible) {
-            element.style.opacity = '1';
-            element.style.transform = 'translateY(0)';
-        }
-    });
-}
-
-// Initial styles for reveal elements
-document.querySelectorAll('.section-title, .section-subtitle, .section-label').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.8s ease-out, transform 0.8s ease-out';
-});
-
-window.addEventListener('scroll', revealOnScroll);
-revealOnScroll(); // Initial call
-
-// ===== CONSOLE WELCOME MESSAGE =====
-console.log('%c☕ Welcome to Café Aroma', 'font-size: 20px; font-weight: bold; color: #6F4E37;');
-console.log('%cEnjoy our premium coffee experience!', 'font-size: 14px; color: #D4A574;');
-
-// ===== PERFORMANCE: LAZY LOAD IMAGES =====
-if ('IntersectionObserver' in window) {
-    const imageObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src || img.src;
-                img.classList.add('loaded');
-                observer.unobserve(img);
-            }
-        });
-    });
-
-    document.querySelectorAll('img').forEach(img => {
-        imageObserver.observe(img);
-    });
-}
-
+  if(document.body.dataset.page==='billing') {
+    let active=null,sample=false;
+    function renderOrder(order,isSample=false){active=order;sample=isSample;const when=new Date(order.createdAt).toLocaleString('en-PK',{dateStyle:'medium',timeStyle:'short'});let menu;try{menu=A.menuUrl(order.menuBase||baseUrl(),order.service==='dine-in'?order.table:'');}catch{menu=A.menuUrl(baseUrl());}$('#receipt-area').innerHTML=`<article class="receipt" aria-label="${isSample?'Sample':'Demo'} order receipt"><header class="receipt-header"><div class="brand"><span class="brand-symbol">a.</span><span>café aroma<small>YOUR DAILY LITTLE RITUAL</small></span></div><h2>${isSample?'Sample receipt':'Thanks for your little pause.'}</h2><p>Fictional café · Portfolio demonstration</p><p>${isSample?'SAMPLE · NOT AN ACTUAL ORDER':'DEMO ORDER · NOT SENT TO A CAFÉ'}</p></header><div class="receipt-meta"><div><span>ORDER NUMBER</span>${e(order.id)}</div><div><span>DATE / TIME</span>${e(when)}</div><div><span>SERVICE</span>${order.service==='dine-in'?'Dine in · Table '+e(order.table):'Takeaway'}</div><div><span>PAYMENT PREFERENCE</span>${order.payment==='cash'?'Cash at table':'Pay at counter'}</div></div><table><thead><tr><th scope="col">Item</th><th scope="col">Qty</th><th scope="col">Amount</th></tr></thead><tbody>${order.items.map(i=>`<tr><td>${e(i.name)}<br><small class="muted">${A.money(i.price)} each</small></td><td>${i.qty}</td><td>${A.money(i.price*i.qty)}</td></tr>`).join('')}</tbody></table><div class="cart-totals">${totalsHTML(order)}</div><span class="badge-status">Payment due · No payment collected</span>${order.notes?`<p class="receipt-note">Order note: ${e(order.notes)}</p>`:''}<div class="receipt-footer"><h3>Until your next favourite.</h3><p>Scan to explore the menu again.</p><div class="qr-box" id="receipt-qr"></div><p>Demo tax 5% · Not a fiscal invoice<br>Locally generated receipt · ${isSample?'Sample data':'Stored on this device'}</p></div></article>`;renderQR('#receipt-qr',menu);$('#print-receipt').disabled=false;$('#download-order').disabled=false;$('#billing-heading').textContent=isSample?'A taste of the receipt experience.':'Your demo receipt is ready.';$('#billing-status').textContent=isSample?'You’re previewing sample data. It has not been added to your order history.':'Order saved on this device. Payment remains due; no real order has been placed.';$$('.history-item').forEach(el=>el.classList.toggle('active',el.dataset.order===order.id));}
+    function renderHistory(){const list=orders();$('#order-history').innerHTML=list.length?list.map(order=>`<button class="history-item" data-order="${e(order.id)}"><span>${e(order.id)}<small>${e(new Date(order.createdAt).toLocaleDateString('en-PK'))} · ${order.service==='dine-in'?'Table '+e(order.table):'Takeaway'}</small></span><span>${A.money(order.total)} ↗</span></button>`).join(''):'<p class="muted small">No demo orders yet. Start with the menu or preview a sample below.</p>';}
+    renderHistory();const list=orders(),queryId=new URLSearchParams(location.search).get('order'),requested=queryId||read('latest-order',null),initial=list.find(order=>order.id===requested)||(queryId?null:list[0]);if(initial)renderOrder(initial);else if(queryId)$('#billing-status').textContent='This order was not found on this device. Receipts are local to the browser where the order was created.';
+    $('#order-history').addEventListener('click',event=>{const button=event.target.closest('[data-order]');if(!button)return;const order=orders().find(o=>o.id===button.dataset.order);if(order){renderOrder(order);history.replaceState(null,'','billing.html?order='+encodeURIComponent(order.id));}});
+    $('#print-receipt').addEventListener('click',()=>{if(active)window.print();});$('#download-order').addEventListener('click',()=>{if(active)download((sample?'sample-':active.id)+'-receipt.json',JSON.stringify({...active,demo:true,paymentCollected:false},null,2),'application/json');});
+    $('#load-sample').addEventListener('click',()=>{const items=[{id:'caramel',name:'Caramel Cloud Latte',price:650,qty:2},{id:'croissant',name:'Butter Croissant',price:420,qty:1}];const t=A.totals(items.map(i=>({id:i.id,qty:i.qty})));renderOrder({id:'AR-SAMPLE',createdAt:new Date().toISOString(),items,...t,service:'dine-in',table:7,notes:'A little extra care, please.',payment:'counter',menuBase:baseUrl()},true);});
+  }
+})();
