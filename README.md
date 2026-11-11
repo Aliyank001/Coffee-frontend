@@ -1,6 +1,6 @@
 # Café Aroma
 
-A considered café experience built with HTML, CSS and JavaScript. Forest green, warm paper tones, editorial type, locally served photography and restrained motion frame a complete digital-menu portfolio demo.
+A considered café experience built with HTML, CSS and JavaScript. The original coffee brown and cream palette, Playfair Display and Poppins typography, rounded cards, locally served photography and restrained motion frame a complete digital-menu portfolio demo.
 
 ## Run locally
 
