@@ -15,3 +15,7 @@ Local photographs were retrieved from images.unsplash.com for this portfolio con
 These are illustrative stock photographs; they do not depict a real Café Aroma business or guarantee an exact product appearance.
 
 QR generation library: https://github.com/kazuhikoarase/qrcode-generator (v1.4.4, MIT). The upstream license and copyright header are preserved in vendor/qrcode.js.
+
+## Generated signature drinks
+
+`assets/drink-flight.png` was generated using the built-in image generation tool for this project. It contains four isolated drinks used as a CSS sprite: iced latte, chocolate mocha, matcha and citrus tea. The supplied Glacé video informed layout and motion; its frames are not distributed as website assets. These are illustrative product visuals, not photographs of a real café’s products. The generation brief is recorded in `DESIGN.md`.

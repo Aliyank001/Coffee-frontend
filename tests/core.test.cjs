@@ -56,5 +56,5 @@ test('every local HTML asset and link resolves, with no placeholder links or dup
    if(fragment){const targetHTML=fs.readFileSync(path.join(root,targetFile),'utf8');assert.ok(targetHTML.includes(`id="${fragment}"`),`${file}: missing anchor ${url}`);}
   }
  }
- for(const p of A.products)assert.ok(fs.statSync(path.join(root,'assets',p.image+'.jpg')).size>1000);
+ for(const p of A.products)assert.ok(fs.statSync(path.join(root,'assets',p.image+(Number.isInteger(p.sprite)?'.png':'.jpg'))).size>1000);
 });

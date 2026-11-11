@@ -1,6 +1,6 @@
 # Café Aroma
 
-A considered café experience built with HTML, CSS and JavaScript. The original coffee brown and cream palette, Playfair Display and Poppins typography, rounded cards, locally served photography and restrained motion frame a complete digital-menu portfolio demo.
+A considered café experience built with HTML, CSS and JavaScript. A reference-led cinematic dark palette, Playfair Display and Poppins typography, transparent drink photography, floating ingredients and interactive flavour transitions frame a complete digital-menu portfolio demo.
 
 ## Run locally
 
@@ -22,7 +22,8 @@ Deploy the generated `dist` directory to any static host. All three HTML pages m
 
 ## Experience
 
-- **Home / digital menu:** eight products, category filters, search, empty states, accessible add buttons, local cart, quantities and removal.
+- **Signature hero:** four selectable drinks (latte, cocoa, matcha, citrus), matching scene colors, a large transparent product visual, animated ingredients, keyboard selection, optional automatic rotation and direct ordering. Reduced-motion settings disable automatic rotation by default.
+- **Home / digital menu:** eleven products, category filters, search, empty states, accessible add buttons, local cart, quantities and removal.
 - **Checkout:** dine-in/table (1–99) or takeaway, preferences, payment preference, itemized integer PKR billing and a clearly labelled illustrative 5% tax. Checkout creates a local demo order and redirects to its receipt.
 - **Billing:** dedicated page with order history (last 20), itemized receipt, unpaid status, menu QR, print/save PDF and JSON download. A sample receipt is available without creating an order.
 - **QR studio:** locally generated SVG codes for general menus or table-specific links, SVG download, link copy and printable branded table card. `?table=7#menu` opens the menu and preselects table 7.
@@ -54,7 +55,8 @@ For real café service, add an authenticated staff dashboard, server-backed orde
 - `qr.html`: QR studio
 - `data.js`: catalog, billing and validation domain rules
 - `script.js`: page interactions and browser persistence
-- `style.css`: responsive design, motion, print rules
+- `style.css`: shared base layout and print rules
+- `experience.css`: reference-led dark theme, responsive signature hero, motion and print adaptations
 - `assets/`: local café photography and favicon
 - `vendor/qrcode.js`: vendored MIT QR generator
 - `tests/`: domain, QR, integrity and interaction tests
@@ -67,3 +69,7 @@ For real café service, add an authenticated staff dashboard, server-backed orde
 ## Credits
 
 Photography: Unsplash (downloaded local assets; see `CREDITS.md`). Typography: Google Fonts, DM Sans and Playfair Display, with system fallbacks. QR generator: Kazuhiko Arase, `qrcode-generator` v1.4.4, MIT; original copyright retained in the vendored source. Café Aroma is an illustrative portfolio brand.
+
+## Visual reference
+
+The latest design follows the supplied Glacé hero video: oversized background type, a central drink cutout, warm textured dark surfaces, flavour selection and coordinated scene transitions. Original Café Aroma branding and working local order/QR flows are retained. See `DESIGN.md` for the design and image-generation brief.
