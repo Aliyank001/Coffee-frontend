@@ -48,13 +48,27 @@ test('vendored QR generator produces a real scalable QR with quiet zone',()=>{
 });
 test('every local HTML asset and link resolves, with no placeholder links or duplicate IDs',()=>{
  const root=path.resolve(__dirname,'..');
- for(const file of ['index.html','qr.html','billing.html']){
+ for(const file of ['index.html','owner-tools/qr.html','billing.html']){
   const html=fs.readFileSync(path.join(root,file),'utf8'),ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(new Set(ids).size,ids.length,file+' duplicate IDs');assert.equal((html.match(/<h1\b/g)||[]).length,1,file+' primary heading');
   for(const [,url] of html.matchAll(/(?:src|href)="([^"]+)"/g)){
    assert.notEqual(url,'#',file+' placeholder link');if(/^(https?:|data:|mailto:|tel:)/.test(url))continue;
-   const [target,fragment]=url.split('#'),targetFile=target||file;assert.ok(fs.existsSync(path.join(root,targetFile)),`${file}: missing ${targetFile}`);
-   if(fragment){const targetHTML=fs.readFileSync(path.join(root,targetFile),'utf8');assert.ok(targetHTML.includes(`id="${fragment}"`),`${file}: missing anchor ${url}`);}
+   const [target,fragment]=url.split('#'),targetFile=target?path.resolve(root,path.dirname(file),target):path.resolve(root,file);assert.ok(fs.existsSync(targetFile),`${file}: missing ${targetFile}`);
+   if(fragment){const targetHTML=fs.readFileSync(targetFile,'utf8');assert.ok(targetHTML.includes(`id="${fragment}"`),`${file}: missing anchor ${url}`);}
   }
  }
  for(const p of A.products)assert.ok(fs.statSync(path.join(root,'assets',p.image+(Number.isInteger(p.sprite)?'.png':'.jpg'))).size>1000);
+});
+
+test('public build removes legacy QR page and excludes owner controls',()=>{
+ const root=path.resolve(__dirname,'..'),out=path.join(root,'dist');
+ fs.mkdirSync(out,{recursive:true});fs.writeFileSync(path.join(out,'qr.html'),'legacy generator');
+ require('node:child_process').execFileSync(process.execPath,[path.join(root,'tools/build.cjs')]);
+ assert.equal(fs.existsSync(path.join(out,'qr.html')),false);
+ assert.equal(fs.existsSync(path.join(out,'owner-tools')),false);
+ for(const file of ['index.html','billing.html','script.js']){
+  const source=fs.readFileSync(path.join(out,file),'utf8');
+  assert.doesNotMatch(source,/qr-form|QR studio|qr[.]html|owner-tools|digital-section/i,file+' leaked owner controls');
+ }
+ assert.ok(fs.existsSync(path.join(out,'robots.txt')));
+ assert.match(fs.readFileSync(path.join(root,'owner-tools/qr.html'),'utf8'),/noindex,nofollow,noarchive/);
 });
