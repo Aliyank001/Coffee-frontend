@@ -28,3 +28,11 @@ DOM interaction tests cover the flavour selector, keyboard switching, pause stat
 ## Story photograph update
 
 Asset: `assets/cafe-interior.png`, generated with the built-in image generation tool (opaque background). Brief: photorealistic editorial café interior in landscape 4:3; walnut cabinetry, brown leather seating, stone espresso counter, brushed brass pendants, soft window daylight, subtle plants and warm amber light. Eye-level composition showing the counter and seating, no people, logos, signs, text or blank borders. The values strip beneath the hero was removed at the user’s request. The photo fills its frame with explicit inset positioning.
+
+## Menu video reference
+
+The second supplied video shows a warm tan coffee showcase, a black coffee bag centered between concise copy, oversized ghosted typography and layered floating beans. These cues are applied to a compact panel inside the menu. The existing dark signature-drink hero is unchanged. Customers can add the existing Double Espresso or jump directly to the full menu; the hot-coffee action applies the category filter. On mobile the copy, bag and notes stack; reduced-motion settings stop decorative motion.
+
+Generated asset: `assets/house-blend.png`, built-in image generation, transparent background enabled.
+
+Final prompt: Create one photorealistic premium coffee packaging product cutout on a truly transparent background. A single upright matte-black 250g resealable coffee bag, entire bag visible, centered with comfortable transparent margins, slightly angled three-quarter front view, strong tactile paper texture, folded top seam, soft studio light from upper left with warm caramel edge highlights. Tasteful cream typography on the bag: small top line 'CAFÉ AROMA', large central text 'HOUSE BLEND', small bottom text 'ESPRESSO ROAST · 250g'. Minimal elegant package design, small thin copper line details, no other objects, no coffee beans outside bag, no ground plane, no backdrop, no frames. Premium editorial coffee product photography suitable as the large central floating object in a website menu feature. Tall portrait composition, realistic proportions, high legibility, transparent alpha background.

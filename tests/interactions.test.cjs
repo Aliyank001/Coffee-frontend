@@ -8,6 +8,7 @@ function page(file='index.html',search='',storage={},origin){
  const errors=[],console=new VirtualConsole();console.on('jsdomError',err=>{if(!err.message.includes('navigation to another Document'))errors.push(err.message);});
  const dom=new JSDOM(fs.readFileSync(path.join(root,file),'utf8'),{url:(origin||(file.startsWith('owner-tools/')?'http://127.0.0.1:4175/':'https://cafe.example/'))+file+search,runScripts:'outside-only',virtualConsole:console});const w=dom.window;
  w.matchMedia=()=>({matches:false,addEventListener(){}});
+ w.HTMLElement.prototype.scrollIntoView=function(){w.lastScrollTarget=this.id;};
  w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new w.Event('close'));};
  w.print=()=>{w.printed=true;};
  for(const [key,value] of Object.entries(storage))w.localStorage.setItem(key,value);
@@ -60,5 +61,16 @@ test('owner tool refuses to run on a public hostname',()=>{
  const p=page('owner-tools/qr.html','',{},'https://public.example/');
  assert.match(p.doc.querySelector('main').textContent,/local only/);
  assert.equal(p.doc.querySelector('#qr-form'),null);
+ assert.deepEqual(p.errors,[]);p.close();
+});
+
+test('menu roast showcase adds espresso and its hot-coffee shortcut clears stale search',()=>{
+ const p=page();click(p,'#roast-order');
+ assert.deepEqual(JSON.parse(p.w.localStorage.getItem('aroma.v2.cart')),[{id:'espresso',qty:1}]);
+ input(p,'#menu-search','no-match');click(p,'#roast-filter');
+ assert.equal(p.doc.querySelector('#menu-search').value,'');
+ assert.equal(p.doc.querySelector('[data-filter="hot"]').getAttribute('aria-pressed'),'true');
+ assert.equal(p.doc.querySelectorAll('.product-card').length,3);
+ assert.equal(p.w.lastScrollTarget,'menu-list');
  assert.deepEqual(p.errors,[]);p.close();
 });

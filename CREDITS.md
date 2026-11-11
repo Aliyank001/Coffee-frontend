@@ -21,3 +21,5 @@ QR generation library: https://github.com/kazuhikoarase/qrcode-generator (v1.4.4
 `assets/drink-flight.png` was generated using the built-in image generation tool for this project. It contains four isolated drinks used as a CSS sprite: iced latte, chocolate mocha, matcha and citrus tea. The supplied Glacé video informed layout and motion; its frames are not distributed as website assets. These are illustrative product visuals, not photographs of a real café’s products. The generation brief is recorded in `DESIGN.md`.
 
 `assets/cafe-interior.png` is a built-in image generation asset: an illustrative walnut-and-brass espresso bar with warm lighting and leather seating, created to replace the story-section stock photo. It does not depict a physical Café Aroma branch.
+
+`assets/house-blend.png` is an original built-in image generation asset: a matte-black Café Aroma coffee package used as an illustrative house-roast visual. The supplied second video informed its compact menu showcase and floating-bean motion. The package is not listed as a separate purchasable SKU; its button orders the existing Double Espresso.
