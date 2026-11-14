@@ -2,9 +2,9 @@
 (() => {
   const A=window.Aroma,$=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],e=A.escape;
   const reduced=window.matchMedia('(prefers-reduced-motion: reduce)');
-  function visual(p){
+  function visual(p,detail=false){
     if(Number.isInteger(p.sprite))return `<div class="product-sprite"><span class="drink-art" style="--drink-position:${p.sprite*100/3}%" role="img" aria-label="${e(p.name)}"></span></div>`;
-    return `<img src="assets/${p.image}.jpg" alt="${e(p.name)}" loading="lazy" decoding="async" width="600" height="640">`;
+    return `<img src="assets/${p.image}.webp" srcset="assets/${p.image}-360.webp 360w, assets/${p.image}.webp 600w" sizes="${detail?'(max-width:480px) calc(100vw - 56px), 320px':'(max-width:480px) 43vw, (max-width:800px) 43vw, (max-width:1100px) 28vw, 22vw'}" alt="${e(p.name)}" loading="lazy" decoding="async" width="${p.imageWidth}" height="${p.imageHeight}">`;
   }
   $$('[data-year]').forEach(el=>el.textContent=new Date().getFullYear());
   const menuToggle=$('.menu-toggle'),mobile=$('#mobile-menu');
@@ -26,16 +26,17 @@
     $('#menu-results').textContent=`${products.length} ${products.length===1?'favourite':'favourites'} to make your day`;
   }
   $$('[data-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.filter;$$('[data-filter]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button));});renderProducts();}));
+  $$('[data-menu-category]').forEach(link=>link.addEventListener('click',event=>{event.preventDefault();$('#menu-search').value='';const button=$('[data-filter="'+link.dataset.menuCategory+'"]');button.click();$('#menu-list').scrollIntoView({behavior:reduced.matches?'auto':'smooth',block:'start'});button.focus({preventScroll:true});}));
   $('#menu-search').addEventListener('input',renderProducts);
   $('#reset-search').addEventListener('click',()=>{$('#menu-search').value='';$('[data-filter="all"]').click();$('#menu-search').focus();});
   $('#roast-filter').addEventListener('click',()=>{$('#menu-search').value='';$('[data-filter="hot"]').click();$('#menu-list').scrollIntoView({behavior:reduced.matches?'auto':'smooth',block:'start'});$('[data-filter="hot"]').focus({preventScroll:true});});
   const details=$('#menu-detail'),gallery=$('#gallery-dialog');let detailOpener;
-  document.addEventListener('click',event=>{const button=event.target.closest('[data-view]');if(!button)return;const p=A.products.find(p=>p.id===button.dataset.view);if(!p)return;detailOpener=button;$('#detail-image').innerHTML=visual(p);$('#detail-category').textContent=A.labels[p.category];$('#detail-title').textContent=p.name;$('#detail-description').textContent=p.description;$('#detail-price').textContent=A.money(p.price);details.showModal();document.body.style.overflow='hidden';});
+  document.addEventListener('click',event=>{const button=event.target.closest('[data-view]');if(!button)return;const p=A.products.find(p=>p.id===button.dataset.view);if(!p)return;detailOpener=button;$('#detail-image').innerHTML=visual(p,true);$('#detail-category').textContent=A.labels[p.category];$('#detail-title').textContent=p.name;$('#detail-description').textContent=p.description;$('#detail-price').textContent=A.money(p.price);details.showModal();document.body.style.overflow='hidden';});
   $('#close-detail').addEventListener('click',()=>details.close());
   $('#detail-back').addEventListener('click',()=>details.close());
   details.addEventListener('close',()=>{document.body.style.overflow='';detailOpener?.focus();});
   [details,gallery].forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target!==dialog)return;const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}));
-  $('#view-space').addEventListener('click',()=>{gallery.showModal();document.body.style.overflow='hidden';});
+  $('#view-space').addEventListener('click',()=>{const image=$('#gallery-image');if(!image.getAttribute('src'))image.src=image.dataset.src;gallery.showModal();document.body.style.overflow='hidden';});
   $('#close-gallery').addEventListener('click',()=>gallery.close());
   gallery.addEventListener('close',()=>{document.body.style.overflow='';$('#view-space').focus();});
   renderProducts();
@@ -71,4 +72,32 @@
       if(window.matchMedia('(pointer:fine)').matches&&!reduced.matches){scene.addEventListener('pointermove',event=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{const rect=scene.getBoundingClientRect();scene.style.setProperty('--pointer-x',((event.clientX-rect.left)/rect.width-.5)*12+'px');scene.style.setProperty('--pointer-y',((event.clientY-rect.top)/rect.height-.5)*8+'px');});});scene.addEventListener('pointerleave',()=>{scene.style.setProperty('--pointer-x','0px');scene.style.setProperty('--pointer-y','0px');});}
       selectFlavour(0);pauseUI();
     }
+
+  // Bean visual: assets/coffee-bean.webp; built-in image generation, then WebP compression.
+  // Generation prompt: One single photorealistic roasted espresso coffee bean, isolated on a truly transparent alpha background. Entire bean visible, portrait oval shape, view from slightly above so the deep naturally curved central seam and one side are visible, rich warm dark brown roasted surface, small tactile pores, realistic curved ridges, beautiful warm caramel highlights from upper left and soft dark shading toward lower right. Macro luxury coffee product photography. Bean centered, fills 80 percent of the canvas with clear transparent margins, no shadow outside the bean, no ground plane, no text, no logo, no other beans, no extra props, no background. This is a small transparent cutout asset for a floating and spinning coffee-bean animation on a warm beige cafe webpage.
+  // Layered coffee-showcase motion, local to the featured roast panel.
+  const roast=$('.roast-spotlight'),roastToggle=$('#roast-motion-toggle');
+  if(roast&&roastToggle){
+    let inView=!('IntersectionObserver' in window),userPaused=false,pointerFrame;
+    function updateRoastMotion(){
+      const playing=inView&&!document.hidden&&!reduced.matches&&!userPaused&&!details.open&&!gallery.open;
+      roast.dataset.animating=String(playing);
+      roastToggle.disabled=reduced.matches;
+      roastToggle.setAttribute('aria-pressed',String(userPaused||reduced.matches));
+      roastToggle.setAttribute('aria-label',reduced.matches?'Coffee showcase motion disabled by your device preference':userPaused?'Play coffee showcase animation':'Pause coffee showcase animation');
+      roastToggle.innerHTML='<span aria-hidden="true">'+(reduced.matches?'—':userPaused?'▷':'Ⅱ')+'</span>';
+    }
+    roastToggle.hidden=false;
+    roastToggle.addEventListener('click',()=>{userPaused=!userPaused;updateRoastMotion();});
+    if('IntersectionObserver' in window){const roastObserver=new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;updateRoastMotion();},{threshold:.12});roastObserver.observe(roast);}
+    document.addEventListener('visibilitychange',updateRoastMotion);
+    reduced.addEventListener('change',updateRoastMotion);
+    details.addEventListener('close',updateRoastMotion);gallery.addEventListener('close',updateRoastMotion);
+    document.addEventListener('click',updateRoastMotion);
+    if(window.matchMedia('(pointer:fine)').matches){
+      roast.addEventListener('pointermove',event=>{if(reduced.matches||userPaused)return;cancelAnimationFrame(pointerFrame);pointerFrame=requestAnimationFrame(()=>{const rect=roast.getBoundingClientRect();roast.style.setProperty('--roast-tilt-x',((event.clientY-rect.top)/rect.height-.5)*-6+'deg');roast.style.setProperty('--roast-tilt-y',((event.clientX-rect.left)/rect.width-.5)*8+'deg');});});
+      roast.addEventListener('pointerleave',()=>{cancelAnimationFrame(pointerFrame);roast.style.setProperty('--roast-tilt-x','0deg');roast.style.setProperty('--roast-tilt-y','0deg');});
+    }
+    updateRoastMotion();
+  }
 })();
