@@ -1,9 +1,8 @@
-const fs=require('node:fs');
-const path=require('node:path');
+'use strict';
+const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),out=path.join(root,'dist');
+if(path.dirname(out)!==root||fs.lstatSync(out,{throwIfNoEntry:false})?.isSymbolicLink())throw new Error('Invalid build output path');
+if(fs.existsSync(out))fs.rmSync(out,{recursive:true,force:true});
 fs.mkdirSync(out,{recursive:true});
-// Remove the obsolete public generator from earlier builds. Owner tools are never copied.
-const legacyQR=path.join(out,'qr.html');
-if(fs.existsSync(legacyQR))fs.unlinkSync(legacyQR);
-for(const name of ['index.html','billing.html','robots.txt','style.css','script.js','data.js','assets','vendor']) fs.cpSync(path.join(root,name),path.join(out,name),{recursive:true});
-console.log('Static site built in dist/');
+for(const name of ['index.html','robots.txt','style.css','script.js','data.js','assets'])fs.cpSync(path.join(root,name),path.join(out,name),{recursive:true});
+console.log('Website built in dist/');
